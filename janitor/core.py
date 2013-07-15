@@ -23,13 +23,13 @@ class ELBPingPong(object):
         return self.app(environ, start_response)
 
 
-def janitor_factory(args, secret_key, auth_options):
+def janitor_factory(args, base_dir, secret_key, auth_options):
     app = Flask(__name__)
 
     @app.route('/', methods=['GET'])
     @app.route('/<path:path>', methods=['GET'])
     def serve(path=''):
-        return send_from_directory('./', path)
+        return send_from_directory(base_dir, path)
 
     if auth_options['service'].lower() == 'github':
         if 'allowed_orgs' in auth_options:

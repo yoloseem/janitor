@@ -21,6 +21,7 @@ def run():
     host = config.get('janitor', 'host')
     port = config.getint('janitor', 'port')
     secret_key = config.get('janitor', 'secret_key')
+    base_dir = config.get('janitor', 'base_dir')
 
     auth_options = {
         'service': config.get('auth', 'service'),
@@ -36,7 +37,7 @@ def run():
             allowed_orgs = [org.strip() for org in allowed_orgs.split(',')]
             auth_options['allowed_orgs'] = allowed_orgs
 
-    app = janitor_factory(args, secret_key, auth_options)
+    app = janitor_factory(args, base_dir, secret_key, auth_options)
     httpd = WSGIServer((host, port), app)
     httpd.serve_forever()
 
