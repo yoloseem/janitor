@@ -1,10 +1,12 @@
-"""
-Janitor
-=======
+from __future__ import with_statement
 
-Janitor is a simple HTTP Server that supports OAuth authentication.
-"""
-from setuptools import find_packages, setup
+import codecs
+from setuptools import setup
+
+
+def readme():
+    with codecs.open('README.rst', encoding='utf-8') as f:
+        return f.read()
 
 
 setup(
@@ -15,8 +17,8 @@ setup(
     author='Hyunjun Kim',
     author_email='kim@hyunjun.kr',
     description='Simple HTTP Server behind the OAuth',
-    long_description=__doc__,
-    packages=find_packages(),
+    long_description=readme(),
+    py_modules=['janitor'],
     install_requires=[
         'Flask',
         'gevent',
