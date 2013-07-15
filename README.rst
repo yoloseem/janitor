@@ -3,7 +3,11 @@ Janitor
 
 Janitor is a simple HTTP Server that supports OAuth authentication.
 
-1. Write a configuration file::
+1. Install Janitor::
+
+    $ pip install janitor
+
+2. Write a configuration file::
 
     $ cat example.cfg
     [janitor]
@@ -18,6 +22,6 @@ Janitor is a simple HTTP Server that supports OAuth authentication.
     client_secret = githubapplicationclientsecret
     allowed_orgs = MyGHOrg
 
-2. Run the app with Janitor::
+3. Run the app with Janitor::
 
     $ janitor -c example.cfg
