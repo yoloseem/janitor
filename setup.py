@@ -11,7 +11,7 @@ def readme():
 
 setup(
     name='Janitor',
-    version='0.1.0',
+    version='0.1.1',
     url='https://github.com/kimjayd/janitor',
     license='MIT License',
     classifiers=[

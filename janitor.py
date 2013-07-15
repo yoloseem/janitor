@@ -26,13 +26,13 @@ class ELBPingPong(object):
         return self.app(environ, start_response)
 
 
-def janitor_factory(args, base_dir, secret_key, auth_options):
+def janitor_factory(options, auth_options):
     app = Flask(__name__)
 
     @app.route('/', methods=['GET'])
     @app.route('/<path:path>', methods=['GET'])
-    def serve(path=''):
-        return send_from_directory(base_dir, path)
+    def serve(path=options['default']):
+        return send_from_directory(options['base_dir'], path)
 
     if auth_options['service'].lower() == 'github':
         if 'allowed_orgs' in auth_options:
@@ -47,7 +47,8 @@ def janitor_factory(args, base_dir, secret_key, auth_options):
         client_secret=auth_options['client_secret'],
     )
 
-    app.wsgi_app = client.wsgi_middleware(app.wsgi_app, secret=secret_key)
+    app.wsgi_app = client.wsgi_middleware(app.wsgi_app,
+                                          secret=options['secret_key'])
     app.wsgi_app = ProxyFix(app.wsgi_app)
     app.wsgi_app = ELBPingPong(app.wsgi_app)
     return app
@@ -63,8 +64,18 @@ def run():
     config.read(args.config)
     host = config.get('janitor', 'host')
     port = config.getint('janitor', 'port')
-    secret_key = config.get('janitor', 'secret_key')
-    base_dir = config.get('janitor', 'base_dir')
+
+    options = {
+        'secret_key': config.get('janitor', 'secret_key'),
+        'base_dir': config.get('janitor', 'base_dir'),
+        'default': 'index.html',
+    }
+    try:
+        default = config.get('janitor', 'default')
+    except ConfigParser.NoOptionError:
+        pass
+    else:
+        options['default'] = default
 
     auth_options = {
         'service': config.get('auth', 'service'),
@@ -80,7 +91,7 @@ def run():
             allowed_orgs = [org.strip() for org in allowed_orgs.split(',')]
             auth_options['allowed_orgs'] = allowed_orgs
 
-    app = janitor_factory(args, base_dir, secret_key, auth_options)
+    app = janitor_factory(options, auth_options)
     httpd = WSGIServer((host, port), app)
     httpd.serve_forever()
 
