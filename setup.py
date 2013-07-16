@@ -12,7 +12,7 @@ def readme():
 setup(
     name='Janitor',
     version='0.1.1',
-    url='https://github.com/kimjayd/janitor',
+    url='https://github.com/yoloseem/janitor',
     license='MIT License',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
